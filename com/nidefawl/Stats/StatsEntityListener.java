@@ -281,7 +281,6 @@ public class StatsEntityListener extends EntityListener {
 			PlayerStat ps = plugin.getPlayerStat(p.getName());
 			if (ps == null)
 				return;
-			ps.skipTeleports = 1;
 			plugin.updateStat(p, "deaths", "total", 1,false);
 			String otherReason = otherDeathCauses.get(p);
 			otherReason = otherReason != null ? otherReason : "unknown";

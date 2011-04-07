@@ -1,5 +1,8 @@
 package com.nidefawl.Stats;
 
+import java.util.HashMap;
+import org.bukkit.entity.Boat;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.vehicle.*;
 
@@ -10,7 +13,8 @@ import org.bukkit.event.vehicle.*;
  */
 public class StatsVehicleListener extends VehicleListener {
 	private Stats plugin;
-
+	public HashMap<String,Float> distBoat = new HashMap<String,Float>();
+	public HashMap<String,Float> distCart = new HashMap<String,Float>();
 	public StatsVehicleListener(Stats plugin) {
 		this.plugin = plugin;
 	}
@@ -84,6 +88,21 @@ public class StatsVehicleListener extends VehicleListener {
 			return;
 		if (!(event.getVehicle().getPassenger() instanceof Player))
 			return;
-		plugin.updateVehicleMove(((Player) event.getVehicle().getPassenger()).getName(), event.getVehicle(), event.getFrom(), event.getTo());
+		Player p = (Player) event.getVehicle().getPassenger();
+		if(event.getVehicle() instanceof Boat) {
+			if(distBoat.containsKey(p.getName())) {
+				float newDistance = distBoat.get(p.getName()) + (float) (event.getFrom().toVector().distance(event.getTo().toVector()));
+				distBoat.put(p.getName(), newDistance);
+			} else {
+				distBoat.put(p.getName(), (float) (event.getFrom().toVector().distance(event.getTo().toVector())));
+			}
+		} else if (event.getVehicle() instanceof Minecart) {
+			if(distBoat.containsKey(p.getName())) {
+				float newDistance = distBoat.get(p.getName()) + (float) (event.getFrom().toVector().distance(event.getTo().toVector()));
+				distBoat.put(p.getName(), newDistance);
+			} else {
+				distBoat.put(p.getName(), (float) (event.getFrom().toVector().distance(event.getTo().toVector())));
+			}
+		}
 	}
 }

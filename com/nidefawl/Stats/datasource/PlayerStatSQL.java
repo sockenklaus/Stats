@@ -1,14 +1,11 @@
 package com.nidefawl.Stats.datasource;
 
-import java.util.logging.Logger;
 import java.sql.*;
 
 import com.nidefawl.Stats.Stats;
 import com.nidefawl.Stats.StatsSettings;
 
 public class PlayerStatSQL extends PlayerStat {
-	static final Logger log = Logger.getLogger("Minecraft");
-	public final String logprefix = "[Stats-" + Stats.version + "]";
 	Stats plugin = null;
 
 	public PlayerStatSQL(String name, Stats plugin) {

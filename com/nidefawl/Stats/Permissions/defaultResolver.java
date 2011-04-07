@@ -18,27 +18,12 @@ public class defaultResolver implements PermissionsResolver {
 	}
 
 	@Override
-	public String getGroup(String player) {
+	public String getGroup(Player player) {
 		return "";
 	}
 
 	@Override
 	public boolean inGroup(Player player, String group) {
-		return false;
-	}
-
-	@Override
-	public String getGroupPrefix(String player) {
-		return "";
-	}
-
-	@Override
-	public String getGroupSuffix(String player) {
-		return "";
-	}
-
-	@Override
-	public boolean canGroupBuild(String group) {
 		return false;
 	}
 

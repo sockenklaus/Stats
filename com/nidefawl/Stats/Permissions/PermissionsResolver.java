@@ -9,15 +9,9 @@ public interface PermissionsResolver {
 
 	public abstract boolean permission(CommandSender player, String permCmd);
 
-	public abstract String getGroup(String player);
+	public abstract String getGroup(Player player);
 
 	public abstract boolean inGroup(Player player, String group);
-
-	public abstract String getGroupPrefix(String player);
-
-	public abstract String getGroupSuffix(String player);
-
-	public abstract boolean canGroupBuild(String group);
 
 	public abstract void reloadPerms();
 

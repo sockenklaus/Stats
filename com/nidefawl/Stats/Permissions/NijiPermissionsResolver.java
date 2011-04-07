@@ -40,38 +40,19 @@ public class NijiPermissionsResolver implements PermissionsResolver {
 	}
 
 	@Override
-	public String getGroup(String player) {
+	public String getGroup(Player player) {
 		if (!load())
 			return "";
-		return perms.getHandler().getGroup(player);
+		return perms.getHandler().getGroup(player.getWorld().getName(), player.getName());
 	}
 
-	@Override
-	public String getGroupPrefix(String player) {
-		if (!load())
-			return "";
-		return perms.getHandler().getGroupPrefix(player);
-	}
 
-	@Override
-	public String getGroupSuffix(String player) {
-		if (!load())
-			return "";
-		return perms.getHandler().getGroupSuffix(player);
-	}
-
-	@Override
-	public boolean canGroupBuild(String group) {
-		if (!load())
-			return false;
-		return perms.getHandler().canGroupBuild(group);
-	}
 
 	@Override
 	public boolean inGroup(Player player, String group) {
 		if (!load())
 			return false;
-		return perms.getHandler().inGroup(player.getName(), group);
+		return perms.getHandler().inGroup(player.getWorld().getName(), player.getName(), group);
 	}
 
 	@Override

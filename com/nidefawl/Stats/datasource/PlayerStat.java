@@ -3,23 +3,17 @@ package com.nidefawl.Stats.datasource;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Set;
-import java.util.logging.Logger;
-import org.bukkit.block.Block;
 import com.nidefawl.Stats.StatsSettings;
 
 public abstract class PlayerStat {
+
 	private String name;
 	public HashMap<String, Category> categories;
-	static final Logger log = Logger.getLogger("Minecraft");
-	private double moveDistance = 0;
-	private double minecartDistance = 0;
-	private double boatDistance = 0;
 	private int lastBoatEnter = 0;
 	private int lastMinecartEnter = 0;
-	private long lastUpdate = System.currentTimeMillis();
-	public int skipTeleports = 0;
-	Block lastFace = null;
+	public long lastUpdate = System.currentTimeMillis();
 	public boolean unload = false;
+	private long lastActivity = System.currentTimeMillis();
 
 	public PlayerStat(String name) {
 		this.name = name;
@@ -48,7 +42,6 @@ public abstract class PlayerStat {
 			cat = newCategory(category);
 		else
 			cat = categories.get(category);
-
 		cat.put(key, val);
 	}
 
@@ -61,7 +54,6 @@ public abstract class PlayerStat {
 		PlayerStat psold = new PlayerStatFile(name, directory);
 		psold.load();
 		copy(psold);
-
 		String location = directory + "/" + name + ".txt";
 		File fold = new File(location);
 		File fnew = new File(location + ".bak");
@@ -73,42 +65,6 @@ public abstract class PlayerStat {
 	public abstract void save(boolean close);
 
 	public abstract void load();
-
-	public void UpdateMove(double distance) {
-		moveDistance += distance;
-		if (moveDistance > 10.0F) {
-			Category cat = categories.get("stats");
-			if (cat == null)
-				cat = newCategory("stats");
-			cat.add("move", 10);
-			moveDistance = 0;
-			setLastUpdate();
-		}
-	}
-
-	public void UpdateMinecartMove(double distance) {
-		minecartDistance += distance;
-		if (minecartDistance >= 10.0F) {
-			Category cat = categories.get("minecart");
-			if (cat == null)
-				cat = newCategory("minecart");
-			cat.add("move", 10);
-			minecartDistance = 0;
-			setLastUpdate();
-		}
-	}
-
-	public void UpdateBoatMove(double distance) {
-		boatDistance += distance;
-		if (boatDistance >= 10.0F) {
-			Category cat = categories.get("boat");
-			if (cat == null)
-				cat = newCategory("boat");
-			cat.add("move", 10);
-			boatDistance = 0;
-			setLastUpdate();
-		}
-	}
 
 	public void setLastMinecartEnter(int lastMinecartEnter) {
 		this.lastMinecartEnter = lastMinecartEnter;
@@ -145,15 +101,14 @@ public abstract class PlayerStat {
 	 * @param lastUpdate
 	 *            the lastUpdate to set
 	 */
-	public void setLastUpdate() {
-		this.lastUpdate = System.currentTimeMillis();
-
+	public void setLastActivity() {
+		this.lastActivity = System.currentTimeMillis();
 	}
 
 	/**
 	 * @return the lastUpdate
 	 */
 	public boolean isAfk() {
-		return System.currentTimeMillis() - lastUpdate > StatsSettings.afkTimer * 1000;
+		return System.currentTimeMillis() - lastActivity > StatsSettings.afkTimer * 1000;
 	}
 }

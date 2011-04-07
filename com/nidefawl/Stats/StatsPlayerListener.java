@@ -1,13 +1,14 @@
 package com.nidefawl.Stats;
 
+import java.util.HashMap;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.entity.CraftItem;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.*;
 
-import com.nidefawl.Stats.datasource.PlayerStat;
-
 public class StatsPlayerListener extends PlayerListener {
+
+	public HashMap<String, Float> distWalked = new HashMap<String, Float>();
 	protected Stats plugin;
 
 	public StatsPlayerListener(Stats plugin) {
@@ -64,8 +65,12 @@ public class StatsPlayerListener extends PlayerListener {
 	public void onPlayerMove(PlayerMoveEvent event) {
 		if (event.isCancelled())
 			return;
-		plugin.updateMove(event.getPlayer().getName(), event.getFrom(), event.getTo());
-
+		if (distWalked.containsKey(event.getPlayer().getName())) {
+			float newDistance = distWalked.get(event.getPlayer().getName()) + (float) (event.getFrom().toVector().distance(event.getTo().toVector()));
+			distWalked.put(event.getPlayer().getName(), newDistance);
+		} else {
+			distWalked.put(event.getPlayer().getName(), (float) (event.getFrom().toVector().distance(event.getTo().toVector())));
+		}
 	}
 
 	/**
@@ -78,16 +83,8 @@ public class StatsPlayerListener extends PlayerListener {
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 		if (event.isCancelled())
 			return;
-		if (event.getTo().equals(event.getPlayer().getWorld().getSpawnLocation()))
-			return;
-		PlayerStat ps = plugin.getPlayerStat(event.getPlayer().getName());
-		if (ps == null)
-			return;
-		if (ps.skipTeleports > 0) {
-			ps.skipTeleports--;
-			return;
-		}
-		plugin.updateStat(event.getPlayer(), "teleport", false);
+		if(event.getFrom().toVector().distance(event.getTo().toVector())>5)
+		plugin.updateStat(event.getPlayer(), "teleport", true);
 	}
 
 	/**

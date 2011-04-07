@@ -1,6 +1,6 @@
 name: Stats
 main: com.nidefawl.Stats.Stats
-version: 0.972
+version: 0.985
 author: nidefawl
 commands:
     stats:
