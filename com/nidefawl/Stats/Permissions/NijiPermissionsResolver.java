@@ -59,7 +59,11 @@ public class NijiPermissionsResolver implements PermissionsResolver {
 	public void reloadPerms() {
 		if (!load())
 			return;
-		perms.setupPermissions();
+		if(Permissions.version.toLowerCase().startsWith("3.")) {
+			((Permissions)Permissions.instance).getHandler().reload();
+		} else {
+			perms.setupPermissions();
+		}
 	}
 
 }
