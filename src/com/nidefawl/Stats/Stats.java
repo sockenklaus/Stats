@@ -41,8 +41,8 @@ import com.nidefawl.Stats.util.Updater;
 public class Stats extends JavaPlugin {
 
 	public final static Logger log = Logger.getLogger("Minecraft");
-	public final static double version = 0.99;
-	public final static String logprefix = "[Stats-" + version + "]";
+	public static final String version = "0.99.1";
+	public static final String logprefix = "[Stats-" + version + "]";
 	public final static String defaultCategory = "stats";
 	public boolean enabled = false;
 	public boolean updated = false;
@@ -80,7 +80,7 @@ public class Stats extends JavaPlugin {
 			perms.reloadPerms();
 		}
 	}
-
+	
 	public static void LogError(String Message) {
 		log.log(Level.SEVERE, logprefix + " " + Message);
 	}
@@ -414,6 +414,7 @@ public class Stats extends JavaPlugin {
 	}
 
 	public void onEnable() {
+		
 		getDataFolder().mkdirs();
 		File statsDirectory = new File("stats");
 		if (statsDirectory.exists() && statsDirectory.isDirectory()) {

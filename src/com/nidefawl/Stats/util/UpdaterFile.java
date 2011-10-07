@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 
 import com.nidefawl.Stats.Stats;
 
@@ -37,14 +38,26 @@ public class UpdaterFile {
 	 * The local url location
 	 */
 	private String localLocation;
-	private double localVersion;
-	private double remoteVersion;
+	private String localVersion;
+	private String remoteVersion;
 
-	public UpdaterFile(String remoteLocation, String localLocation, double localVersion, double remoteVersion) {
+	public UpdaterFile(String remoteLocation, String localLocation, String localVersion, String remoteVersion) {
 		this.remoteLocation = remoteLocation;
 		this.localLocation = localLocation;
 		this.localVersion = localVersion;
 		this.remoteVersion = remoteVersion;
+	}
+	
+	public UpdaterFile(String remoteLocation, String localLocation, double localVersion, double remoteVersion){
+		this(remoteLocation, localLocation, String.valueOf(localVersion), String.valueOf(remoteVersion));
+	}
+	
+	public UpdaterFile(String remoteLocation, String localLocation, String localVersion, double remoteVersion){
+		this(remoteLocation, localLocation, localVersion, String.valueOf(remoteVersion));
+	}
+	
+	public UpdaterFile(String remoteLocation, String localLocation, double localVersion, String remoteVersion){
+		this(remoteLocation, localLocation, String.valueOf(localVersion), remoteVersion);
 	}
 
 	/**
@@ -89,7 +102,10 @@ public class UpdaterFile {
 	}
 
 	public boolean update(boolean autoUpdate) throws Exception {
-		if (remoteVersion > localVersion) {
+		DefaultArtifactVersion remoteVersion = new DefaultArtifactVersion(String.valueOf(this.remoteVersion));
+		DefaultArtifactVersion localVersion = new DefaultArtifactVersion(this.localVersion);
+	
+		if (localVersion.compareTo(remoteVersion) < 0) {
 			if (autoUpdate) {
 				try {
 					Stats.LogInfo("Newer version of "+localLocation+" found. local: "+localVersion+" remote: "+remoteVersion);
