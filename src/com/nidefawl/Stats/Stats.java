@@ -41,7 +41,7 @@ import com.nidefawl.Stats.util.Updater;
 public class Stats extends JavaPlugin {
 
 	public final static Logger log = Logger.getLogger("Minecraft");
-	public static final String version = "0.99.1";
+	public static final String version = "0.99.2";
 	public static final String logprefix = "[Stats-" + version + "]";
 	public final static String defaultCategory = "stats";
 	public boolean enabled = false;
@@ -479,7 +479,8 @@ public class Stats extends JavaPlugin {
 		for (Player p : getServer().getOnlinePlayers()) {
 			load(p);
 		}
-		getServer().getScheduler().scheduleSyncRepeatingTask(this, new SaveTask(this), StatsSettings.delay * 20, StatsSettings.delay * 20);
+		getServer().getScheduler().scheduleAsyncRepeatingTask(this, new SaveTask(this), StatsSettings.delay * 20, StatsSettings.delay * 20);
+		
 	}
 
 
@@ -491,11 +492,40 @@ public class Stats extends JavaPlugin {
 			statsInstance = plugin;
 		}
 
-		@Override
 		public void run() {
+			
 			if (!statsInstance.enabled)
 				return;
 			statsInstance.saveAll();
+		}
+		
+		public void saveAll() {
+			if (StatsSettings.debugOutput)
+				log.info("Stats debug: saving " + this.statsInstance.stats.size() + " players stats");
+			try {
+				Connection conn = StatsSQLConnectionManager.getConnection(StatsSettings.useMySQL);
+				if (conn == null)
+					return;
+				conn.setAutoCommit(false);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			for (PlayerStat stat : this.statsInstance.stats.values()) {
+				if (stat == null || this.statsInstance.getServer().getPlayer(stat.getName()) == null) {
+					stat.unload = true;
+					continue;
+				}
+				this.statsInstance.updateTimedStats(stat);
+				stat.save(false);
+			}
+			StatsSQLConnectionManager.closeConnection(StatsSettings.useMySQL);
+			for (PlayerStat stat : this.statsInstance.stats.values()) {
+				if (!stat.unload)
+					continue;
+				LogError("onPlayerQuit did not happen, unloading " + stat.getName() + " now");
+				this.statsInstance.logout(stat.getName());
+				this.statsInstance.unload(stat.getName());
+			}
 		}
 	}
 

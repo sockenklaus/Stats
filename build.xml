@@ -5,7 +5,7 @@
 	<property name="dist" value="dist" />
 	<property name="src" value="src" />
 	<property name="name" value="Stats" />
-	<property name="version" value="0.99.1" />
+	<property name="version" value="0.99.2" />
 	<property name="resources" value="resources" />
 	<property name="author" value="nidefawl" />
  
